@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { envConfiguration } from '@config/env.config';
-import { AuthModule } from '@modules/auth/auth.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { AuthModule } from '@modules/auth/auth.module';
 import { MailsModule } from './modules/mails/mails.module';
+import { envConfiguration, joiValidationSchema } from './config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       load: [envConfiguration],
+      validationSchema: joiValidationSchema,
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',

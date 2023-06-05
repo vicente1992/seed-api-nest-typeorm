@@ -6,6 +6,7 @@ import { JwtAuthGuard } from '@common/guards';
 import { RequestExtend } from '@common/interfaces/user-request';
 import { ForgotAuthDto } from '../dto/forgot-auth.dto';
 import { ResetPasswordAuthDto } from '../models/reset-password-auth.dto';
+import { LoginDto } from '../dto/login.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -18,8 +19,8 @@ export class AuthController {
   }
 
   @Post('login')
-  login(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.login(createAuthDto);
+  login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
   }
 
   @Post('forgot')

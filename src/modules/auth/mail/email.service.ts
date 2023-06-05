@@ -9,7 +9,6 @@ export class EmailService {
 
   async sendForgotPassword(user: UserEntity, token: string) {
     const { names } = user;
-    console.log('path', join(__dirname, '..', '..'));
     await this.mailerService.sendMail({
       to: user.email,
       subject: 'Recuperar contraseña',

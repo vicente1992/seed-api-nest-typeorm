@@ -13,6 +13,8 @@ import { ForgotAuthDto } from '../dto/forgot-auth.dto';
 import { generateRandomCode } from '../helpers/random-code';
 import { ResetPasswordAuthDto } from '../models/reset-password-auth.dto';
 import { comparePassword, hashPassword, setUserInfo } from '../helpers';
+import { CODE_ERRORS } from '@common/constants/message-errors';
+import { EVENT_MESSAGE } from '@common/constants/message-event';
 
 @Injectable()
 export class AuthService {
@@ -45,11 +47,12 @@ export class AuthService {
       const { email, password } = loginDto;
       const user = await this.authRepository.findOne({ where: { email } });
 
-      if (!user) throw new NotFoundException('USER_NOT_EXISTS');
+      if (!user) throw new NotFoundException(CODE_ERRORS.USER_NOT_FOUND);
 
       const checkPassword = await comparePassword(password, user.password);
 
-      if (!checkPassword) throw new NotFoundException('USER_NOT_EXISTS');
+      if (!checkPassword)
+        throw new NotFoundException(CODE_ERRORS.USER_NOT_FOUND);
 
       return {
         user: setUserInfo(user),
@@ -77,16 +80,16 @@ export class AuthService {
       const user: UserEntity = await this.authRepository.findOne({
         where: { email },
       });
-      if (!user) throw new NotFoundException('USER_NOT_EXISTS');
+      if (!user) throw new NotFoundException(CODE_ERRORS.USER_NOT_FOUND);
       const recoverCode = generateRandomCode();
       user.recoverCode = recoverCode;
       this.authRepository.save(user);
-      this.eventEmitter.emit('email.forgot.password', {
+      this.eventEmitter.emit(EVENT_MESSAGE.FORGOT_PASSWORD, {
         user,
         recoverCode,
       });
 
-      return { msg: 'RESET_EMAIL_SENT' };
+      return { msg: CODE_ERRORS.RESET_EMAIL_SENT };
     } catch (error) {
       throw error;
     }
@@ -99,12 +102,12 @@ export class AuthService {
         where: { recoverCode: code },
       });
 
-      if (!user) throw new NotFoundException('USER_NOT_EXISTS');
+      if (!user) throw new NotFoundException(CODE_ERRORS.USER_NOT_FOUND);
 
       user.password = await hashPassword(password);
       user.recoverCode = null;
 
-      this.eventEmitter.emit('email.change.password', { user });
+      this.eventEmitter.emit(EVENT_MESSAGE.CHANGE_PASSWORD, { user });
 
       return this.authRepository.save(user);
     } catch (error) {
