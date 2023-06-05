@@ -1,10 +1,10 @@
+import { UserEntity } from '@modules/auth/entities/user.entity';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from '@modules/auth/entities/user.entity';
 import { join } from 'path';
 
 @Injectable()
-export class EmailService {
+export class AuthMailService {
   constructor(private mailerService: MailerService) {}
 
   async sendForgotPassword(user: UserEntity, token: string) {
@@ -12,7 +12,7 @@ export class EmailService {
     await this.mailerService.sendMail({
       to: user.email,
       subject: 'Recuperar contraseña',
-      template: join(__dirname, '..', '..', '/mails/templates/forgot.hbs'),
+      template: join(__dirname, '..', '..', '/templates/forgot.hbs'),
       context: {
         names,
         token,
@@ -24,12 +24,7 @@ export class EmailService {
     await this.mailerService.sendMail({
       to: user.email,
       subject: 'Se ha cambiado su contraseña',
-      template: join(
-        __dirname,
-        '..',
-        '..',
-        '/mails/templates/changePassword.hbs',
-      ),
+      template: join(__dirname, '..', '..', '/templates/changePassword.hbs'),
       context: {},
     });
   }

@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { AuthMailService } from './services/auth-mail/auth-mail.service';
+import { HandleAuthMailService } from './services/auth-mail/handle-auth-mail.service';
 
 @Module({
   imports: [
@@ -32,5 +34,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       inject: [ConfigService],
     }),
   ],
+  exports: [HandleAuthMailService, AuthMailService],
+  providers: [HandleAuthMailService, AuthMailService],
 })
 export class MailsModule {}
