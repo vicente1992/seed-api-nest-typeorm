@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  db:
+    build: ./database
+    image: mysql:8.0
+    container_name: mysql
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    ports:
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+    environment:
+      MYSQL_TCP_PORT: ${MYSQL_PORT}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB_NAME}
+    
